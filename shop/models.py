@@ -25,7 +25,7 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("product_detail", args=[self.slug])
+        return reverse("shop:product_detail", args=[self.slug])
 
     def get_discounted_price(self):
         """
@@ -40,9 +40,9 @@ class Product(models.Model):
             original_slug = slugify(self.name)
             slug = original_slug
             counter = 1
-        while Product.objects.filter(slug=slug).exists():
-            slug = f"{original_slug}-{counter}"
-            counter += 1
+            while Product.objects.filter(slug=slug).exists():
+                slug = f"{original_slug}-{counter}"
+                counter += 1
             self.slug = slug
         super().save(*args, **kwargs)
 

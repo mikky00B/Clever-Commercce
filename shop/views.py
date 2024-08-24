@@ -6,8 +6,8 @@ from .models import Product, ProductCategory
 def home_view(request):
     latest_products = Product.objects.order_by("-created_at")[:8]
 
-    featured_products = Product.objects.filter(discount_isnull=False).order_by(
-        "-discount_discount_percentage"
+    featured_products = Product.objects.filter(discount__isnull=False).order_by(
+        "-discount__discount_percentage"
     )[
         :4
     ]  # Show top 4 discounted products
@@ -21,7 +21,7 @@ def home_view(request):
         "categories": categories,
     }
 
-    return render(request, "home.html", context)
+    return render(request, "landing.html", context)
 
 
 def search_view(request):
@@ -56,20 +56,22 @@ def product_list_view(request, category_slug=None):
     return render(request, "product_list.html", context)
 
 
-def product_detail_view(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+def product_detail_view(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    print(product.id)
 
     context = {
         "product": product,
     }
-    return render(request, "product_detail.html", context)
+    return render(request, "prod_detail.html", context)
+
 
 def category_view(request, category_slug):
     category = get_object_or_404(ProductCategory, slug=category_slug)
     products = Product.objects.filter(category=category)
 
     context = {
-        'category': category,
-        'products': products,
+        "category": category,
+        "products": products,
     }
-    return render(request, 'category.html',context)
+    return render(request, "category.html", context)
